@@ -1,0 +1,32 @@
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+#    RewriteCond %{HTTP_HOST} ^www.realestate78\.ru$ [NC]
+#    RewriteRule ^(.*)$ http://realestate78.ru/$1 [R=301,L]
+#    RewriteCond %{HTTPS} !=on
+#    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+    Options -MultiViews
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    <IfModule mod_alias.c>
+        RedirectMatch 307 ^/$ /index.php/
+    </IfModule>
+</IfModule>
+
+<IfModule mod_expires.c>
+    <filesMatch "\.(ico|gif|jpg|jpeg|png|webp)$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 month"
+        Header append Cache-Control "public"
+    </filesMatch>
+    <filesMatch "\.(js|css)$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 week"
+        Header append Cache-Control "public"
+    </filesMatch>
+</IfModule>
