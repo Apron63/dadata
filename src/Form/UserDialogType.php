@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Address;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -13,9 +14,8 @@ class UserDialogType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('address', TextType::class, [
-                'required' => false,
-                'mapped' => false,
+            ->add('value', TextType::class, [
+                'label' => 'Адрес',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Запросить',
@@ -25,6 +25,7 @@ class UserDialogType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'data_class' => Address::class,
         ]);
     }
 }

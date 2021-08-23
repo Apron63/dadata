@@ -7,6 +7,7 @@ use App\Entity\City;
 use App\Entity\District;
 use App\Entity\House;
 use App\Entity\Region;
+use App\Entity\Settlement;
 use App\Entity\Street;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -74,6 +75,21 @@ class SaveToDb
             }
         }
 
+        // Save Settlement.
+        if (null !== $response['settlement_fias_id']) {
+            $settlement = $this->em->getRepository(Settlement::class)
+                ->findOneBy(['fiasId' => $response['settlement_fias_id']]);
+            if (null === $settlement) {
+                $settlement = new Settlement();
+                $settlement
+                    ->setFiasId($response['settlement_fias_id'])
+                    ->setName($response['settlement'])
+                    ->setType($response['settlement_type']);
+                $this->em->persist($settlement);
+                $this->em->flush();
+            }
+        }
+
         // Save Street.
         if (null !== $response['street_fias_id']) {
             $street = $this->em->getRepository(Street::class)
@@ -98,7 +114,8 @@ class SaveToDb
                 $house
                     ->setFiasId($response['house_fias_id'])
                     ->setName($response['house'])
-                    ->setType($response['house_type']);
+                    ->setType($response['house_type'])
+                    ->setCreatedAt(new DateTime());
                 $this->em->persist($house);
                 $this->em->flush();
             }
@@ -111,6 +128,7 @@ class SaveToDb
             ->setRegion($region ?? null)
             ->setCity($city ?? null)
             ->setDistrict($district ?? null)
+            ->setSettelment($settlement ?? null)
             ->setStreet($street ?? null)
             ->setHouse($house ?? null)
             ->setCreatedAt(new DateTime());

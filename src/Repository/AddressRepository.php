@@ -19,32 +19,44 @@ class AddressRepository extends ServiceEntityRepository
         parent::__construct($registry, Address::class);
     }
 
-    // /**
-    //  * @return Address[] Returns an array of Address objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return array|null
+     */
+    public function getAllAddress(): ?array
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $query = $this->getEntityManager()->createQuery("
+            SELECT r.name, COUNT(a.id) AS cnt
+            FROM App\Entity\Address a
+            LEFT JOIN App\Entity\Region r WITH r.id = a.region
+            GROUP BY r.id
+        ");
+        return $query->getArrayResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Address
+    /**
+     * @return array|null
+     */
+    public function getCityWithoutHoseId(): ?array
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $this->getEntityManager()->createQuery("
+            SELECT c.name, COUNT(a.id) AS cnt
+            FROM App\Entity\City c
+            LEFT JOIN App\Entity\Address a WITH a.city = c.id
+            WHERE a.house IS NULL
+            GROUP BY c.id
+        ");
+        return $query->getArrayResult();
     }
-    */
+
+    /**
+     * @return array|null
+     */
+    public function getHouseInInterval(): ?array
+    {
+        $query = $this->getEntityManager()->createQuery("
+            SELECT (SECOND(h.createdAt)) AS sec
+            FROM App\Entity\House h
+        ");
+        return $query->getArrayResult();
+    }
 }

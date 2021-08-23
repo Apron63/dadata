@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Address;
 use App\Form\UserDialogType;
+use App\Service\CheckForCity;
 use App\Service\SaveToDb;
+use Dadata\DadataClient;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,16 +17,19 @@ class SiteController extends AbstractController
 {
     protected EntityManagerInterface $em;
     protected SaveToDb $saver;
+    protected CheckForCity $checker;
 
     /**
      * SiteController constructor.
      * @param EntityManagerInterface $em
      * @param SaveToDb $saver
+     * @param CheckForCity $checker
      */
-    public function __construct(EntityManagerInterface $em, SaveToDb $saver)
+    public function __construct(EntityManagerInterface $em, SaveToDb $saver, CheckForCity $checker)
     {
         $this->em = $em;
         $this->saver = $saver;
+        $this->checker = $checker;
     }
 
     /**
@@ -33,15 +39,34 @@ class SiteController extends AbstractController
      */
     public function homepageAction(Request $request): Response
     {
-        $form = $this->createForm(UserDialogType::class);
+        $session = $this->container->get('session');
+        $address = new Address();
+        $form = $this->createForm(UserDialogType::class, $address);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $address = $request->get('user_dialog')['address'];
-            if (!empty($address)) {
-                $dadata = new \Dadata\DadataClient($_ENV['APP_DADATA_API'], $_ENV['APP_DADATA_SECRET']);
-                $response = $dadata->clean("address", $address);
+
+            $addressValue = $request->get('user_dialog')['value'];
+            if (!empty($addressValue)) {
+                $dadata = new DadataClient($_ENV['APP_DADATA_API'], $_ENV['APP_DADATA_SECRET']);
+                try {
+                    $response = $dadata->clean("address", $addressValue);
+                } catch (\Exception $e) {
+                    $session
+                        ->getFlashBag()
+                        ->add('error', 'Что то пошло не так, повторите запрос.');
+                    return $this->redirectToRoute('homepage');
+                }
                 if ($response) {
+                    if ($this->checker->checkEqCityOrSettlement($response)) {
+                        $session
+                            ->getFlashBag()
+                            ->add('success', 'Есть совпадение в городе или населенном пункте. Данные сохранены.');
+                    } else {
+                        $session
+                            ->getFlashBag()
+                            ->add('success', 'Адрес успешно сохранен.');
+                    }
                     $this->saver->saveResultToDb($response);
                 }
             }

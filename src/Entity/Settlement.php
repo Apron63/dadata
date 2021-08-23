@@ -2,16 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\HouseRepository;
+use App\Repository\SettlementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=HouseRepository::class)
- * @ORM\Table(name="house", indexes={
+ * @ORM\Entity(repositoryClass=SettlementRepository::class)
+ * @ORM\Table(name="settlement", indexes={
  *     @ORM\Index(name="idx_fias", columns={"fias_id"}),
  * })
  */
-class House
+class Settlement
 {
     /**
      * @ORM\Id
@@ -31,14 +31,9 @@ class House
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $type;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
 
     public function getId(): ?int
     {
@@ -77,18 +72,6 @@ class House
     public function setType(?string $type): self
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }

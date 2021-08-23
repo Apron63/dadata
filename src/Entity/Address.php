@@ -2,11 +2,27 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AddressRepository::class)
+ * @UniqueEntity(fields="value")
+ *
+ * @ApiResource(
+ *     itemOperations={
+ *       "allAddress"={
+ *           "path"="/api/all_address/",
+ *       },
+ *       "cityWithoutHoseId"={
+ *           "path"="/api/city_without_hose_id/",
+ *       },
+ *      "houseInInterval"={
+ *           "path"="api/house_in_interval/",
+ *       }
+ * })
  */
 class Address
 {
@@ -18,7 +34,7 @@ class Address
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=1024)
+     * @ORM\Column(type="string", length=1024, unique=true)
      */
     private $value;
 
@@ -51,6 +67,11 @@ class Address
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Settlement::class)
+     */
+    private $settlement;
 
     public function getId(): ?int
     {
@@ -137,6 +158,18 @@ class Address
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getSettlement(): ?Settlement
+    {
+        return $this->settlement;
+    }
+
+    public function setSettelment(?Settlement $settlement): self
+    {
+        $this->settlement = $settlement;
 
         return $this;
     }
