@@ -77,4 +77,30 @@ class SiteController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/show_result", name="showResult")
+     * @return Response
+     */
+    public function showResult(): Response
+    {
+        $q1 = $this->em->getRepository(Address::class)
+            ->getAllAddress();
+
+        $q2 = $this->em->getRepository(Address::class)
+            ->getCityWithoutHoseId();
+
+        $q3 = $this->em->getRepository(Address::class)
+            ->getHouseInInterval();
+
+        $q4 = $this->em->getRepository(Address::class)
+            ->getStrangeStreet();
+
+        return $this->render('result.html.twig', [
+            'q1' => $q1,
+            'q2' => $q2,
+            'q3' => $q3,
+            'q4' => $q4,
+        ]);
+    }
 }

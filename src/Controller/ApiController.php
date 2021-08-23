@@ -53,4 +53,15 @@ class ApiController extends AbstractController
 
         return new JsonResponse($data);
     }
+
+    /**
+     * @Route("/api/strange_street/", name="strangeStreet")
+     */
+    public function strangeStreet(): JsonResponse
+    {
+        $data = $this->em->getRepository(Address::class)
+            ->getStrangeStreet();
+
+        return new JsonResponse($data);
+    }
 }

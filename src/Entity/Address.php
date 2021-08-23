@@ -21,11 +21,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *       },
  *      "houseInInterval"={
  *           "path"="api/house_in_interval/",
+ *       },
+ *      "strangeStreet"={
+ *           "path"="api/strange_street/",
  *       }
  * })
  */
 class Address
 {
+    public const ORDINARY_TYPE = 'ул';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

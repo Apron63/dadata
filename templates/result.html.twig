@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row>">
+        <div class="col col-sm-3">
+            <table class="table table-stripped table-bordered">
+                <tbody>
+                {% for e1 in q1 %}
+                    <tr>
+                        <th>
+                            {{ e1['name'] }}
+                        </th>
+                        <th>
+                            {{ e1['cnt'] }}
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
+
+        <div class="col-3 col-sm-3">
+            <table class="table table-stripped table-bordered">
+                <tbody>
+                {% for e2 in q2 %}
+                    <tr>
+                        <th>
+                            {{ e2['name'] }}
+                        </th>
+                        <th>
+                            {{ e2['cnt'] }}
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
+
+        <div class="col-3 col-sm-3">
+            <table class="table table-stripped table-bordered">
+                <tbody>
+                {% for e3 in q3 %}
+                    <tr>
+                        <th>
+                            {{ e3['created'] | date('d.m.y H:i:s') }}
+                        </th>
+                        <th>
+                            {{ e3['addr'] }}
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
+
+        <div class="col-3 col-sm-3">
+            <table class="table table-stripped table-bordered">
+                <tbody>
+                {% for e4 in q4 %}
+                    <tr>
+                        <th>
+                            {{ e4['value'] }}
+                        </th>
+                        <th>
+                            {{ e4['type'] }}
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <a href="{{ path('homepage') }}" class="btn btn-success">На главную</a>
+    </div>
+
+{% endblock %}

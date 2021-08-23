@@ -3,10 +3,12 @@
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block body %}
 
-    <div class="well">
-
-    </div>
     {{ form_start(form, {action: path('homepage')}) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
+
+    <div class="row">
+        <a href="{{ path('showResult') }}" class="btn btn-success">Показвть результаты</a>
+    </div>
+
 {% endblock %}

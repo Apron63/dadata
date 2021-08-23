@@ -54,9 +54,26 @@ class AddressRepository extends ServiceEntityRepository
     public function getHouseInInterval(): ?array
     {
         $query = $this->getEntityManager()->createQuery("
-            SELECT (SECOND(h.createdAt)) AS sec
+            SELECT h.createdAt AS created, a.value as addr
             FROM App\Entity\House h
+            JOIN App\Entity\Address a WITH a.house = h.id
+            WHERE second(h.createdAt) BETWEEN 20 AND 40
         ");
+        return $query->getArrayResult();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getStrangeStreet(): ?array
+    {
+        $query = $this->getEntityManager()->createQuery("
+            SELECT a.value AS value, s.type AS type
+            FROM App\Entity\Street s
+            JOIN App\Entity\Address a WITH a.street = s.id
+            WHERE s.type != :exclude
+        ")
+            ->setParameter('exclude', Address::ORDINARY_TYPE);
         return $query->getArrayResult();
     }
 }
